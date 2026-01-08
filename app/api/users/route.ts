@@ -8,9 +8,6 @@ export async function POST(req: Request) {
     const auth = req.headers.get("authorization") || "";
     const cookie = req.headers.get("cookie") || "";
 
-    console.log("Authorization header:", auth);
-    console.log("Cookie:", cookie);
-
     const res = await fetch(BACKEND, {
       method: "POST",
       headers: {

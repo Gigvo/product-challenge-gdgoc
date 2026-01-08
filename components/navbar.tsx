@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function Navbar() {
   return (
-    <div className="bg-white fixed h-20 w-full flex flex-row justify-between p-4">
+    <div className="border-b border-white  fixed h-20 w-full flex flex-row justify-between p-4">
       <p>AI Recruitment Platform</p>
       <div className="flex flex-row gap-4">
         <Link href={"/auth/login"}>

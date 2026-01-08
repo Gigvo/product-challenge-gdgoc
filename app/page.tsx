@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <div className="bg-gray-100 pt-20 flex flex-col items-center">
+      <div className=" pt-20 flex flex-col items-center">
         <h1 className="text-8xl text-center mx-70 font-bold my-20">
           Hire Smarter with AI-Driven Talent Matching
         </h1>
