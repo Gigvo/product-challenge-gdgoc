@@ -6,12 +6,9 @@ import DashboardLayout from "@/components/dashboard-layout";
 export default function ManageUsers() {
   return (
     <DashboardLayout>
-      <div className="flex">
-        <Sidebar />
-        <div className="p-8">
-          <h3>User Management</h3>
-          <AddUserForm />
-        </div>
+      <div className="p-8">
+        <h3>User Management</h3>
+        <AddUserForm />
       </div>
     </DashboardLayout>
   );

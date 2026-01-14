@@ -1,33 +1,23 @@
 import React from "react";
 import Link from "next/link";
-import {
-  LayoutDashboard,
-  Briefcase,
-  Users,
-  Upload,
-  UserPlus,
-} from "lucide-react";
+import { LayoutDashboard, Briefcase, Users, UserPlus } from "lucide-react";
 
 const navigation = [
   {
     name: "Dashboard",
     href: "/dashboard",
     icon: LayoutDashboard,
-    adminOnly: false,
   },
   {
     name: "Job Vacancies",
     href: "/job-vacancies",
     icon: Briefcase,
-    adminOnly: false,
   },
-  { name: "Candidates", href: "/candidates", icon: Users, adminOnly: false },
-  { name: "Upload CV", href: "/upload-cv", icon: Upload, adminOnly: false },
+  { name: "Candidates", href: "/candidates", icon: Users },
   {
     name: "Manage Users",
     href: "/manage-users",
     icon: UserPlus,
-    adminOnly: true,
   },
 ];
 
