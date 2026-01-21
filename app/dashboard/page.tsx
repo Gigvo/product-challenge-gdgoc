@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight, Calendar } from "lucide-react";
+import { Suspense } from "react";
+import Loading from "./loading";
 
 interface DashboardData {
   totalJobs: number;
@@ -13,10 +15,7 @@ interface DashboardData {
     id: number;
     fullName: string;
     createdAt: string;
-    job: {
-      id: number;
-      title: string;
-    };
+    job: { id: number; title: string };
   }>;
 }
 
@@ -33,18 +32,14 @@ async function getDashboardData(): Promise<DashboardData> {
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 
-  if (!token) {
-    throw new Error("No authentication token found");
-  }
+  if (!token) throw new Error("No authentication token found");
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
   const res = await fetch(`${baseUrl}/api/dashboard`, {
     method: "GET",
     cache: "no-store",
-    headers: {
-      Cookie: `token=${token}`,
-    },
+    headers: { Cookie: `token=${token}` },
   });
 
   if (!res.ok) {
@@ -60,6 +55,64 @@ async function getDashboardData(): Promise<DashboardData> {
   return result.data as DashboardData;
 }
 
+const DashboardContent = async ({
+  dataPromise,
+}: {
+  dataPromise: Promise<DashboardData>;
+}) => {
+  const data = await dataPromise;
+
+  return (
+    <div className="flex flex-col gap-8">
+      <div className="flex flex-row gap-6 items-center justify-center">
+        <div className="rounded-[10px] border-1 border-muted bg-card p-6 flex-1">
+          <p>Total Jobs</p>
+          <p>{data.totalJobs}</p>
+        </div>
+        <div className="rounded-[10px] border-1 border-muted bg-card p-6 flex-1">
+          <p>Total Candidates</p>
+          <p>{data.totalCandidates}</p>
+        </div>
+      </div>
+
+      <div className="rounded-[10px] border-1 border-muted bg-card">
+        <div className="flex flex-row justify-between px-6 py-4 items-center">
+          <div>
+            <p className="pb-2 font-bold text-2xl">Newest Candidates</p>
+            <p className="text-muted-foreground pb-2">Latest Applicant</p>
+          </div>
+          <Link href={"/candidates"}>
+            <Button variant={"ghost"} className="border-1">
+              View All <ArrowRight />
+            </Button>
+          </Link>
+        </div>
+
+        <div className="flex flex-col ">
+          {data.newestCandidates.map((candidate) => (
+            <div key={candidate.id} className="border-t px-6 py-2">
+              <div className="flex flex-row justify-between">
+                <div>
+                  <p>{candidate.fullName}</p>
+                  <p className="text-muted-foreground">
+                    Applied for {candidate.job.title}
+                  </p>
+                </div>
+                <div className="flex flex-row gap-2 items-center text-muted-foreground">
+                  <Calendar className="w-4 h-4" />
+                  <p className="text-muted-foreground">
+                    {formatDate(candidate.createdAt)}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default async function Dashboard() {
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
@@ -68,58 +121,16 @@ export default async function Dashboard() {
     redirect("/login");
   }
 
-  const data = await getDashboardData();
+  const dataPromise = getDashboardData();
 
   return (
     <DashboardLayout>
       <div className="p-8">
         <h3 className="font-bold text-3xl mb-8">Dashboard</h3>
-        <div className="flex flex-col gap-8">
-          <div className="flex flex-row gap-6 items-center justify-center">
-            <div className="rounded-[10px] border-1 border-muted bg-card p-6 flex-1">
-              <p>Total Jobs</p>
-              <p>{data.totalJobs}</p>
-            </div>
-            <div className="rounded-[10px] border-1 border-muted bg-card p-6 flex-1">
-              <p>Total Candidates</p>
-              <p>{data.totalCandidates}</p>
-            </div>
-          </div>
-          <div className="rounded-[10px] border-1 border-muted bg-card">
-            <div className="flex flex-row justify-between px-6 py-4 items-center">
-              <div>
-                <p className=" pb-2 font-bold text-2xl">Newest Candidates</p>
-                <p className="text-muted-foreground pb-2">Latest Applicant</p>
-              </div>
-              <Link href={"/candidates"}>
-                <Button variant={"ghost"} className="border-1">
-                  View All <ArrowRight />
-                </Button>
-              </Link>
-            </div>
 
-            <div className="flex flex-col ">
-              {data.newestCandidates.map((candidate) => (
-                <div key={candidate.id} className="border-t px-6 py-2">
-                  <div className="flex flex-row justify-between">
-                    <div>
-                      <p>{candidate.fullName}</p>
-                      <p className="text-muted-foreground">
-                        Applied for {candidate.job.title}
-                      </p>
-                    </div>
-                    <div className="flex flex-row gap-2 items-center text-muted-foreground">
-                      <Calendar className="w-4 h-4" />
-                      <p className="text-muted-foreground">
-                        {formatDate(candidate.createdAt)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+        <Suspense fallback={<Loading />}>
+          <DashboardContent dataPromise={dataPromise} />
+        </Suspense>
       </div>
     </DashboardLayout>
   );

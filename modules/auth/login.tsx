@@ -104,9 +104,9 @@ export default function LoginForm() {
         <InputForm
           id="email"
           name="email"
-          label="email"
+          label="Email"
           type="email"
-          placeholder="name@gmail.com"
+          placeholder="account@hr.com"
           value={formData.email}
           onChange={handleChange}
           error={getFieldError("email")}
@@ -117,24 +117,17 @@ export default function LoginForm() {
         <PasswordInput
           id="password"
           name="password"
-          label="password"
-          placeholder="Enter your password"
+          label="Password"
+          placeholder="••••••••"
           value={formData.password}
           onChange={handleChange}
           error={getFieldError("password")}
           disabled={isLoading}
           required
         />
-        <Button type="submit" className="bg-green-500" disabled={isLoading}>
+        <Button type="submit" className="w-full" disabled={isLoading}>
           Masuk
         </Button>
-
-        <div className="text-center mt-4 text-sm">
-          <span className="text-gray-600">Don&apos;t have an account? </span>
-          <Link href="/auth/register" className="text-gray-600">
-            Sign up
-          </Link>
-        </div>
       </form>
     </>
   );

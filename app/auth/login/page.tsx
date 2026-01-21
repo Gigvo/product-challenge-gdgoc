@@ -6,7 +6,7 @@ export default function Login() {
   return (
     <AuthLayout
       title="Login"
-      description="Masuk ke akun Anda untuk melanjutkan"
+      description="Log in to unlock advanced hiring tools and manage your recruitment workflow."
     >
       <LoginForm />
     </AuthLayout>

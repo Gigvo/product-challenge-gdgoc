@@ -2,11 +2,22 @@
 
 import React from "react";
 import Link from "next/link";
-import { LayoutDashboard, Briefcase, Users, UserPlus } from "lucide-react";
+import {
+  LayoutDashboard,
+  Briefcase,
+  Users,
+  UserPlus,
+  Home,
+} from "lucide-react";
 import { Button } from "./ui/button";
 import { usePathname } from "next/navigation";
 
 const navigation = [
+  {
+    name: "Home",
+    href: "/",
+    icon: Home,
+  },
   {
     name: "Dashboard",
     href: "/dashboard",
@@ -32,7 +43,7 @@ export default function Sidebar() {
     window.location.href = "/";
   };
   return (
-    <aside className="h-screen w-[20%] min-w-[250px] z-40 flex flex-col justify-between border-r border-gray-200 fixed left-0 top-0 bg-sidebar text-sidebar-foreground">
+    <aside className="h-screen w-[20%] min-w-[250px] z-40 flex flex-col justify-between rounded-r-xl fixed left-0 top-0 bg-sidebar text-sidebar-foreground">
       <div>
         <p className="text-xl font-bold p-4 border-b">
           AI Driven Talent Matching
@@ -53,7 +64,10 @@ export default function Sidebar() {
           })}
         </div>
       </div>
-      <Button className="rounded-[0]" onClick={handleLogout}>
+      <Button
+        className="rounded-br-xl rounded-l-[0] rounded-tr-[0]"
+        onClick={handleLogout}
+      >
         Logout
       </Button>
     </aside>

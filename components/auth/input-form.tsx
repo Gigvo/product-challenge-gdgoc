@@ -1,7 +1,7 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
+import { Mail } from "lucide-react";
 interface FormInputProps {
   id: string;
   name: string;
@@ -28,21 +28,25 @@ export default function InputForm({
   required = false,
 }: FormInputProps) {
   return (
-    <div>
-      <Label htmlFor={id}>
+    <div className="space-y-2">
+      <Label htmlFor={id} className="">
         {label}
         {required && "*"}
       </Label>
-      <Input
-        id={id}
-        name={name}
-        type={type}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        disabled={disabled}
-      />
-      {error && <p className="text-red-500 text-sm">{error}</p>}
+      <div className="relative">
+        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Input
+          id={id}
+          name={name}
+          type={type}
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+          disabled={disabled}
+          className="pl-10"
+        />
+        {error && <p className="text-red-500 text-sm">{error}</p>}
+      </div>
     </div>
   );
 }
