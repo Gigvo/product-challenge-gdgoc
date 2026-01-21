@@ -3,7 +3,6 @@ import { NextResponse, NextRequest } from "next/server";
 export async function GET(req: NextRequest) {
   try {
     const token = req.cookies.get("token")?.value;
-    console.log("Token present:", !!token);
 
     const res = await fetch(
       "https://ai-recruitment-backend-gdgoc.vercel.app/api/dashboard",
@@ -16,12 +15,8 @@ export async function GET(req: NextRequest) {
       },
     );
 
-    console.log("Backend status:", res.status);
-
     const backend = await res.json();
-    console.log("Backend dashboard response:", backend);
 
-    // Return the same status from backend
     if (!res.ok) {
       return NextResponse.json(
         { error: backend.message || "Backend error", data: null },

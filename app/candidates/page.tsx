@@ -1,8 +1,8 @@
 import React from "react";
-import Sidebar from "@/components/sidebar";
 import DashboardLayout from "@/components/dashboard-layout";
 import CandidateCard from "@/components/candidates/candidate-card";
 import AddCandidate from "@/components/candidates/add-candidate";
+import ExportButton from "@/components/candidates/export-button";
 
 export default function Candidates() {
   return (
@@ -15,7 +15,10 @@ export default function Candidates() {
               Review and manage candidate applications with AI-powered insights
             </p>
           </div>
-          <AddCandidate />
+          <div className="flex flex-row gap-4">
+            <AddCandidate />
+            <ExportButton />
+          </div>
         </div>
 
         <CandidateCard />
