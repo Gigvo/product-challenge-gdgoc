@@ -2,7 +2,6 @@
 
 import { useState, FormEvent, ChangeEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import InputForm from "@/components/auth/input-form";

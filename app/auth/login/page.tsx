@@ -1,6 +1,7 @@
 import React from "react";
 import LoginForm from "@/modules/auth/login";
 import AuthLayout from "@/components/auth/auth-layout";
+import { Suspense } from "react";
 
 export default function Login() {
   return (
@@ -8,7 +9,9 @@ export default function Login() {
       title="Login"
       description="Log in to unlock advanced hiring tools and manage your recruitment workflow."
     >
-      <LoginForm />
+      <Suspense fallback={<div>Loading...</div>}>
+        <LoginForm />
+      </Suspense>
     </AuthLayout>
   );
 }

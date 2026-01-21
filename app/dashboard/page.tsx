@@ -1,6 +1,7 @@
 import React from "react";
 import DashboardLayout from "@/components/dashboard-layout";
 import { cookies } from "next/headers";
+import { headers } from "next/headers"; // added
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -34,7 +35,10 @@ async function getDashboardData(): Promise<DashboardData> {
 
   if (!token) throw new Error("No authentication token found");
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  const hdrs = await headers();
+  const host = hdrs.get("x-forwarded-host") || hdrs.get("host");
+  const proto = hdrs.get("x-forwarded-proto") || "http";
+  const baseUrl = host ? `${proto}://${host}` : "http://localhost:3000";
 
   const res = await fetch(`${baseUrl}/api/dashboard`, {
     method: "GET",
