@@ -1,18 +1,18 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
 const BACKEND = "https://ai-recruitment-backend-gdgoc.vercel.app/api/users";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const auth = req.headers.get("authorization") || "";
-    const cookie = req.headers.get("cookie") || "";
+    const token = req.cookies.get("token")?.value;
 
     const res = await fetch(BACKEND, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        ...(cookie ? { cookie } : {}),
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...(auth ? { authorization: auth } : {}),
       },
       body: JSON.stringify(body),

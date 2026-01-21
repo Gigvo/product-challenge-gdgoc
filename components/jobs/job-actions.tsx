@@ -34,10 +34,15 @@ interface JobData {
 
 interface JobActionsProps {
   job: JobData;
+  onDeleteSuccess?: (deletedId: number) => void;
+  onEditSuccess?: () => void;
 }
 
-export default function JobActions({ job }: JobActionsProps) {
-  const router = useRouter();
+export default function JobActions({
+  job,
+  onDeleteSuccess,
+  onEditSuccess,
+}: JobActionsProps) {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -53,7 +58,7 @@ export default function JobActions({ job }: JobActionsProps) {
         console.error("Failed to delete job");
         return;
       }
-      router.refresh();
+      onDeleteSuccess?.(job.id);
     } catch (error) {
       console.error("Failed to delete job:", error);
     } finally {
@@ -88,7 +93,13 @@ export default function JobActions({ job }: JobActionsProps) {
           <DialogHeader>
             <DialogTitle>Edit Job Vacancy</DialogTitle>
           </DialogHeader>
-          <EditJobForm job={job} onSuccess={() => setEditOpen(false)} />
+          <EditJobForm
+            job={job}
+            onSuccess={() => {
+              setEditOpen(false);
+              onEditSuccess?.();
+            }}
+          />
         </DialogContent>
       </Dialog>
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>

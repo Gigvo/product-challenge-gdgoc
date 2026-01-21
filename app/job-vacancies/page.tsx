@@ -6,11 +6,13 @@ import AddJobs from "@/components/jobs/add-job";
 export default function JobVacancies() {
   return (
     <DashboardLayout>
-      <div className="flex flex-row justify-between items-center mb-4">
-        <p className="font-bold text-xl">Job Vacancies</p>
-        <AddJobs />
+      <div className="p-8">
+        <div className="flex flex-row justify-between items-center mb-4">
+          <h3 className="font-bold text-3xl">Job Vacancies</h3>
+          <AddJobs />
+        </div>
+        <JobCard />
       </div>
-      <JobCard />
     </DashboardLayout>
   );
 }

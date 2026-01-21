@@ -19,11 +19,13 @@ import {
 interface DeleteCandidateProps {
   candidateId: number;
   candidateName: string;
+  onDeleteSuccess?: (id: number) => void;
 }
 
 export default function DeleteCandidate({
   candidateId,
   candidateName,
+  onDeleteSuccess,
 }: DeleteCandidateProps) {
   const router = useRouter();
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -38,7 +40,7 @@ export default function DeleteCandidate({
 
       if (response.ok) {
         setDeleteOpen(false);
-        router.refresh();
+        onDeleteSuccess?.(candidateId);
       }
     } catch (error) {
       console.error("Failed to delete candidate:", error);

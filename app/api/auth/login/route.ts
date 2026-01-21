@@ -15,7 +15,7 @@ export async function POST(req: Request) {
           error: "Invalid JSON in request body",
           sample: rawBody.slice(0, 1000),
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -25,17 +25,33 @@ export async function POST(req: Request) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(parsed),
-      }
+      },
     );
 
-    const data = await res.text();
-    const setCookie = res.headers.get("set-cookie");
-    const headers: Record<string, string> = {
-      "Content-Type": res.headers.get("content-type") || "application/json",
-      ...(setCookie ? { "Set-Cookie": setCookie } : {}),
-    };
+    const data = await res.json();
 
-    return new NextResponse(data, { status: res.status, headers });
+    // Extract token from nested structure (data.data.token or data.token)
+    const token =
+      data.data?.token ||
+      data.data?.accessToken ||
+      data.data?.access_token ||
+      data.token ||
+      data.accessToken ||
+      data.access_token;
+
+    const response = NextResponse.json(data, { status: res.status });
+
+    if (res.ok && token) {
+      response.cookies.set({
+        name: "token",
+        value: token,
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 * 7, // 7 days
+        path: "/",
+      });
+    }
+
+    return response;
   } catch (err) {
     console.error("Proxy fetch error:", err);
     return NextResponse.json({ error: String(err) }, { status: 500 });

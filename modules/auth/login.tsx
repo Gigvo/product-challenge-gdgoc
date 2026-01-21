@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, FormEvent, ChangeEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -20,6 +20,9 @@ interface ValidationErrors {
 
 export default function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
@@ -50,13 +53,7 @@ export default function LoginForm() {
         body: JSON.stringify(formData),
       });
 
-      const text = await response.text();
-      let data: any = {};
-      try {
-        data = JSON.parse(text);
-      } catch {
-        data = { message: text };
-      }
+      const data = await response.json();
 
       if (!response.ok) {
         if (data.errors) setErrors(data.errors);
@@ -64,26 +61,11 @@ export default function LoginForm() {
         return;
       }
 
-      // Extract token from data object
-      const tokenData = data.data || {};
-      const token =
-        tokenData.token ||
-        tokenData.accessToken ||
-        tokenData.access_token ||
-        tokenData.acess_token ||
-        data.token ||
-        data.accessToken ||
-        data.access_token ||
-        data.acess_token;
-
-      if (token) {
-        localStorage.setItem("authToken", token);
-      } else {
-        console.warn("No token found in response");
-      }
-
       setMessage("Login successful! Redirecting...");
-      router.push("/dashboard");
+
+      // Use router.refresh() to update the middleware state, then redirect
+      router.refresh();
+      router.push(callbackUrl);
     } catch (error) {
       console.error("An unexpected error occurred:", error);
       setMessage("An unexpected error occurred. Please try again.");
@@ -95,6 +77,7 @@ export default function LoginForm() {
   const getFieldError = (field: keyof ValidationErrors): string | undefined => {
     return errors[field];
   };
+
   return (
     <>
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -142,7 +125,7 @@ export default function LoginForm() {
           disabled={isLoading}
           required
         />
-        <Button type="submit" className=" bg-green-500" disabled={isLoading}>
+        <Button type="submit" className="bg-green-500" disabled={isLoading}>
           Masuk
         </Button>
 

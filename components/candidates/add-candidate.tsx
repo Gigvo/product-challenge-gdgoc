@@ -11,11 +11,14 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import CandidateForm from "./candidate-form";
+import { useRouter } from "next/navigation";
 
 export default function AddCandidate() {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
   const handleSuccess = () => {
     setOpen(false);
+    router.refresh();
   };
   return (
     <Dialog open={open} onOpenChange={setOpen}>

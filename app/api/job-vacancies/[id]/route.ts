@@ -1,20 +1,24 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
 export async function PATCH(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  { params }: { params: { id: string } },
 ) {
   try {
     const body = await req.json();
     const { id } = await params;
+    const token = req.cookies.get("token")?.value;
 
     const res = await fetch(
       `https://ai-recruitment-backend-gdgoc.vercel.app/api/job-vacancies/${id}`,
       {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
         body: JSON.stringify(body),
-      }
+      },
     );
 
     const data = await res.json();
@@ -26,17 +30,22 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  { params }: { params: { id: string } },
 ) {
   try {
     const { id } = await params;
+    const token = req.cookies.get("token")?.value;
 
     const res = await fetch(
       `https://ai-recruitment-backend-gdgoc.vercel.app/api/job-vacancies/${id}`,
       {
         method: "DELETE",
-      }
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+      },
     );
 
     const data = await res.json();

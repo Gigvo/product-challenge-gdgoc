@@ -52,7 +52,6 @@ export default function JobsForm({ onSuccess }: JobsFormProps) {
     }
 
     onSuccess?.();
-    router.refresh();
   };
 
   return (

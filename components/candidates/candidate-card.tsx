@@ -1,9 +1,25 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import ViewCandidate from "./view-candidate";
 import DeleteCandidate from "./delete-candidate";
 import DownloadCV from "./download-cv";
 import { Badge } from "../ui/badge";
-import { Briefcase, FileText, Sparkles } from "lucide-react";
+import {
+  Briefcase,
+  FileText,
+  Sparkles,
+  Search,
+  ArrowUpDown,
+} from "lucide-react";
+import { Input } from "../ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 interface CandidateData {
   id: number;
@@ -15,6 +31,7 @@ interface CandidateData {
   cvUrl: string;
   matchScore: number;
   jobId: number;
+  createdAt: string;
 }
 
 interface JobData {
@@ -22,40 +39,102 @@ interface JobData {
   title: string;
 }
 
-async function getCandidates(): Promise<CandidateData[]> {
-  const response = await fetch(
-    "https://ai-recruitment-backend-gdgoc.vercel.app/api/candidates",
-    { cache: "no-store" }
-  );
-  if (!response.ok) {
-    throw new Error("Failed to fetch candidates");
-  }
-  const results = await response.json();
-  return results.data || results;
-}
+export default function CandidateCard() {
+  const [candidates, setCandidates] = useState<CandidateData[]>([]);
+  const [jobs, setJobs] = useState<JobData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("matchScore");
 
-async function getJobsById(): Promise<JobData[]> {
-  const response = await fetch(
-    "https://ai-recruitment-backend-gdgoc.vercel.app/api/job-vacancies",
-    { cache: "no-store" }
-  );
-  if (!response.ok) {
-    throw new Error("Failed to fetch jobs");
-  }
-  const results = await response.json();
-  return results.data || results;
-}
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [candidatesRes, jobsRes] = await Promise.all([
+          fetch("/api/candidates", { cache: "no-store" }),
+          fetch("/api/job-vacancies", { cache: "no-store" }),
+        ]);
+        if (!candidatesRes.ok || !jobsRes.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const candidatesData = await candidatesRes.json();
+        const jobsData = await jobsRes.json();
+        setCandidates(
+          Array.isArray(candidatesData.data) ? candidatesData.data : [],
+        );
+        setJobs(Array.isArray(jobsData.data) ? jobsData.data : []);
+      } catch (err) {
+        setError("Failed to fetch candidates or jobs");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
-export default async function CandidateCard() {
-  const [candidates, jobs] = await Promise.all([
-    getCandidates(),
-    getJobsById(),
-  ]);
+  const handleDeleteSuccess = (deletedId: number) => {
+    setCandidates((prev) =>
+      prev.filter((candidate) => candidate.id !== deletedId),
+    );
+  };
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
+
+  const formatDate = (dateString: string): string => {
+    return new Date(dateString).toLocaleDateString("en-GB", {
+      year: "numeric",
+      month: "long",
+      day: "2-digit",
+    });
+  };
 
   const jobMap = new Map(jobs.map((job) => [job.id, job.title]));
+
+  const filteredCandidates = candidates
+    .filter(
+      (candidate) =>
+        candidate.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        jobMap
+          .get(candidate.jobId)
+          ?.toLowerCase()
+          .includes(searchQuery.toLowerCase()),
+    )
+    .sort((a, b) => {
+      if (sortBy === "matchScore") return b.matchScore - a.matchScore;
+      if (sortBy === "name") return a.fullName.localeCompare(b.fullName);
+      if (sortBy === "date")
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      return 0;
+    });
   return (
-    <div>
-      {candidates.map((candidate: CandidateData) => (
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-row gap-2 w-full">
+        <div className="flex flex-row gap-2 items-center relative flex-1">
+          <Search className="left-3 absolute w-4 h-4" />
+          <Input
+            placeholder="Search Candidates"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          ></Input>
+        </div>
+        <Select value={sortBy} onValueChange={setSortBy}>
+          <SelectTrigger>
+            <ArrowUpDown />
+            <SelectValue placeholder="Sort By" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="matchScore">Match Score</SelectItem>
+            <SelectItem value="name">Name</SelectItem>
+            <SelectItem value="date">Date</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {filteredCandidates.map((candidate: CandidateData) => (
         <div
           key={candidate.id}
           className="border p-6 mb-4 rounded-lg shadow-md text-muted-foreground bg-card flex flex-col gap-2"
@@ -73,8 +152,8 @@ export default async function CandidateCard() {
                   candidate.matchScore >= 75
                     ? "bg-accent/50"
                     : candidate.matchScore >= 50
-                    ? "bg-yellow-500/50"
-                    : "bg-red-500/50"
+                      ? "bg-yellow-500/50"
+                      : "bg-red-500/50"
                 }`}
               >
                 <Sparkles className="text-card-foreground" />
@@ -93,6 +172,7 @@ export default async function CandidateCard() {
               <DeleteCandidate
                 candidateId={candidate.id}
                 candidateName={candidate.fullName}
+                onDeleteSuccess={handleDeleteSuccess}
               />
             </div>
           </div>

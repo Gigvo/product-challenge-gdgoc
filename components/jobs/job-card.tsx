@@ -1,5 +1,17 @@
-import JobActions from "./job-actions";
+"use client";
 
+import { useEffect, useState, useCallback } from "react";
+import JobActions from "./job-actions";
+import { Search, MapPin, ListFilter } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 interface JobData {
   id: number;
   title: string;
@@ -9,47 +21,121 @@ interface JobData {
   required_skills: string[];
 }
 
-async function getJobs(): Promise<JobData[]> {
-  const response = await fetch(
-    "https://ai-recruitment-backend-gdgoc.vercel.app/api/job-vacancies",
-    { cache: "no-store" }
-  );
+export default function JobCard() {
+  const [jobs, setJobs] = useState<JobData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [jobStatus, setJobStatus] = useState("all");
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch jobs");
-  }
+  const fetchJobs = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/job-vacancies", {
+        cache: "no-store",
+      });
+      if (response.ok) {
+        const result = await response.json();
+        setJobs(Array.isArray(result.data) ? result.data : []);
+      } else {
+        setError("Failed to fetch jobs");
+      }
+    } catch (err) {
+      setError("Network error");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  const results = await response.json();
-  return results.data || results;
-}
+  useEffect(() => {
+    fetchJobs();
+  }, [fetchJobs]);
 
-export default async function JobCard() {
-  const data = await getJobs();
+  const handleRefresh = () => {
+    fetchJobs();
+  };
+
+  const handleDeleteSuccess = () => {
+    fetchJobs();
+  };
+
+  const filteredJobs = jobs.filter((job) => {
+    const matchesSearch = job.title
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    const matchesFilter =
+      jobStatus === "all" || job.isActive === (jobStatus === "active");
+
+    return matchesSearch && matchesFilter;
+  });
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+
   return (
-    <div className="flex flex-row flex-wrap p-8 gap-4">
-      {data.map((job: JobData, index) => (
-        <div key={index} className="border p-4 mb-4 rounded shadow">
-          <div className="flex flex-row gap-4">
-            <h4 className="text-lg font-semibold">{job.title}</h4>
-            <JobActions job={job} />
-          </div>
-          <p className="text-gray-600">{job.description}</p>
-          <p className="text-gray-500">{job.location}</p>
-          <p className={job.isActive ? "text-green-500" : "text-red-500"}>
-            {job.isActive ? "Active" : "Inactive"}
-          </p>
-          <p className="text-sm text-gray-700">Requirements:</p>
-          {job.required_skills && job.required_skills.length > 0 ? (
-            job.required_skills.map((req, reqIndex) => (
-              <li key={reqIndex} className="text-sm text-gray-600">
-                {req}
-              </li>
-            ))
-          ) : (
-            <p className="text-sm text-gray-600">No specific requirements</p>
-          )}
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-row gap-2">
+        <div className="flex flex-row gap-2 items-center relative flex-1">
+          <Search className="left-3 absolute w-4 h-4" />
+          <Input
+            placeholder="Search Jobs"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          ></Input>
         </div>
-      ))}
+        <Select value={jobStatus} onValueChange={setJobStatus}>
+          <SelectTrigger>
+            <ListFilter />
+            <SelectValue placeholder="Filter By" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="active">Active</SelectItem>
+            <SelectItem value="inactive">Inactive</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="grid grid-cols-2 py-8 gap-4">
+        {filteredJobs.map((job: JobData) => (
+          <div key={job.id} className="border p-4 rounded-xl shadow bg-card">
+            <div className="flex flex-row justify-between gap-4">
+              <div className="flex flex-row gap-4 items-center">
+                <h4 className="text-xl font-semibold">{job.title}</h4>
+                <Badge className={job.isActive ? "bg-green-500" : "bg-red-500"}>
+                  {job.isActive ? "Active" : "Inactive"}
+                </Badge>
+              </div>
+              <JobActions
+                job={job}
+                onDeleteSuccess={handleDeleteSuccess}
+                onEditSuccess={handleRefresh}
+              />
+            </div>
+            <p className="text-gray-600">{job.description}</p>
+            <p className="text-gray-500 flex items-center gap-2">
+              <MapPin className="w-3 h-3" />
+              {job.location}
+            </p>
+
+            <p className="text-sm text-gray-700">Requirements:</p>
+            <ul className="list-disc list-inside">
+              {job.required_skills && job.required_skills.length > 0 ? (
+                job.required_skills.map((req, reqIndex) => (
+                  <li key={reqIndex} className="text-sm text-gray-600">
+                    {req}
+                  </li>
+                ))
+              ) : (
+                <p className="text-sm text-gray-600">
+                  No specific requirements
+                </p>
+              )}
+            </ul>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

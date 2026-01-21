@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
-import { useRouter } from "next/navigation";
 import { Input } from "../ui/input";
 import {
   Select,
@@ -30,7 +29,6 @@ export default function CandidateForm({ onSuccess }: CandidateFormProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const router = useRouter();
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -103,15 +101,14 @@ export default function CandidateForm({ onSuccess }: CandidateFormProps) {
 
       if (!response.ok) {
         throw new Error(
-          data.error || data.message || "Failed to submit candidate"
+          data.error || data.message || "Failed to submit candidate",
         );
       }
 
       onSuccess();
-      router.refresh();
     } catch (error) {
       setError(
-        error instanceof Error ? error.message : "An unexpected error occurred"
+        error instanceof Error ? error.message : "An unexpected error occurred",
       );
     } finally {
       setLoading(false);
