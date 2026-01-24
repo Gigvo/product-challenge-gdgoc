@@ -1,12 +1,11 @@
-import React from "react";
+import React, { Suspense } from "react";
 import DashboardLayout from "@/components/dashboard-layout";
 import { cookies } from "next/headers";
-import { headers } from "next/headers"; // added
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight, Calendar } from "lucide-react";
-import { Suspense } from "react";
 import Loading from "./loading";
 
 interface DashboardData {
@@ -122,16 +121,21 @@ export default async function Dashboard() {
   const token = cookieStore.get("token")?.value;
 
   if (!token) {
-    redirect("/login");
+    redirect("/auth/login");
   }
 
-  const dataPromise = getDashboardData();
+  let dataPromise: Promise<DashboardData>;
+  try {
+    dataPromise = getDashboardData();
+    await dataPromise;
+  } catch (error: any) {
+    redirect("/auth/login");
+  }
 
   return (
     <DashboardLayout>
       <div className="p-8">
         <h3 className="font-bold text-3xl mb-8">Dashboard</h3>
-
         <Suspense fallback={<Loading />}>
           <DashboardContent dataPromise={dataPromise} />
         </Suspense>
