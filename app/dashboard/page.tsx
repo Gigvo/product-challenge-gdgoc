@@ -67,14 +67,14 @@ const DashboardContent = async ({
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex flex-row gap-6 items-center justify-center">
+      <div className="flex lg:flex-row flex-col gap-6 justify-center">
         <div className="rounded-[10px] border-1 border-muted bg-card p-6 flex-1">
-          <p>Total Jobs</p>
-          <p>{data.totalJobs}</p>
+          <p className="font-bold text-2xl">Total Jobs</p>
+          <p className="text-lg">{data.totalJobs}</p>
         </div>
         <div className="rounded-[10px] border-1 border-muted bg-card p-6 flex-1">
-          <p>Total Candidates</p>
-          <p>{data.totalCandidates}</p>
+          <p className="font-bold text-2xl">Total Candidates</p>
+          <p className="text-lg">{data.totalCandidates}</p>
         </div>
       </div>
 
@@ -134,7 +134,7 @@ export default async function Dashboard() {
 
   return (
     <DashboardLayout>
-      <div className="p-8">
+      <div className="lg:p-8 p-0">
         <h3 className="font-bold text-3xl mb-8">Dashboard</h3>
         <Suspense fallback={<Loading />}>
           <DashboardContent dataPromise={dataPromise} />

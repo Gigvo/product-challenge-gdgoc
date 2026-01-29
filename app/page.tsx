@@ -7,7 +7,7 @@ export default function Home() {
     <>
       <Navbar />
       <main className="pt-24 min-h-screen bg-gradient-to-b from-background/90 via-muted/60 to-background/95">
-        <section className="container px-90 py-20 text-center flex flex-col items-center">
+        <section className="container lg:px-90 md:px-20 px-10 py-20 text-center mx-auto flex flex-col items-center">
           <Reveal>
             <h1 className="text-5xl lg:text-7xl font-extrabold leading-tight text-foreground">
               Hire Smarter with AI-Driven Talent Matching

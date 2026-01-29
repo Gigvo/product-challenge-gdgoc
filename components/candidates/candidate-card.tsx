@@ -139,14 +139,14 @@ export default function CandidateCard() {
           key={candidate.id}
           className="border p-6 mb-4 rounded-lg shadow-md text-muted-foreground bg-card flex flex-col gap-2"
         >
-          <div className="flex flex-row justify-between">
+          <div className="flex md:flex-row flex-col gap-4 justify-between ">
             <div className="flex flex-col gap-2">
               <h2 className="font-bold text-card-foreground">
                 {candidate.fullName}
               </h2>
-              <p>{candidate.email}</p>
+              <p className="wrap-break-word">{candidate.email}</p>
             </div>
-            <div className="flex flex-row flex-wrap gap-4 items-center ">
+            <div className="flex flex-row flex-wrap gap-4 items-center">
               <div
                 className={`px-3 py-2 rounded-[8px] flex flex-row gap-2 items-center justify-center ${
                   candidate.matchScore >= 75

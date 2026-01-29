@@ -97,7 +97,7 @@ export default function JobCard() {
         </Select>
       </div>
 
-      <div className="grid grid-cols-2 py-8 gap-4">
+      <div className="grid lg:grid-cols-2 grid-rows-1 py-8 gap-4">
         {filteredJobs.map((job: JobData) => (
           <div key={job.id} className="border p-4 rounded-xl shadow bg-card">
             <div className="flex flex-row justify-between gap-4">

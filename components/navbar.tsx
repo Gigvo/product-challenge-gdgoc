@@ -10,7 +10,15 @@ export default function Navbar() {
   const checkSession = async () => {
     try {
       const res = await fetch("/api/auth/me", { cache: "no-store" });
-      return res.ok;
+      if (res.ok) return true;
+
+      if (res.status === 401) {
+        try {
+          await fetch("/api/auth/logout", { method: "POST" });
+        } catch {}
+      }
+
+      return false;
     } catch {
       return false;
     }
@@ -24,12 +32,14 @@ export default function Navbar() {
       if (mounted) setIsLoggedIn(logged);
     })();
 
-    const onStorage = async () => setIsLoggedIn(await checkSession());
-    window.addEventListener("storage", onStorage);
+    const onStorageOrFocus = async () => setIsLoggedIn(await checkSession());
+    window.addEventListener("storage", onStorageOrFocus);
+    window.addEventListener("focus", onStorageOrFocus);
 
     return () => {
       mounted = false;
-      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("storage", onStorageOrFocus);
+      window.removeEventListener("focus", onStorageOrFocus);
     };
   }, []);
 
