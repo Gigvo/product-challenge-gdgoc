@@ -27,7 +27,7 @@ export default function AddJobs() {
           Add Job Vacancy
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-125">
+      <DialogContent className="max-w-125 max-md:max-w-80">
         <DialogHeader>
           <DialogTitle>Add Job Vacancy</DialogTitle>
         </DialogHeader>

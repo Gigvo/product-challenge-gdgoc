@@ -34,7 +34,7 @@ export default function AddCandidate() {
             <Plus /> <p>Add Candidate</p>
           </Button>
         </DialogTrigger>
-        <DialogContent className="max-w-125">
+        <DialogContent className="max-w-125 max-md:max-w-80">
           <DialogHeader>
             <DialogTitle>Add Candidate</DialogTitle>
           </DialogHeader>
@@ -47,7 +47,7 @@ export default function AddCandidate() {
 
       {/* Summarizing dialog */}
       <Dialog open={summarizeOpen} onOpenChange={setSummarizeOpen}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-125 max-md:max-w-80">
           <DialogHeader>
             <DialogTitle className="sr-only">
               Summarizing candidate data

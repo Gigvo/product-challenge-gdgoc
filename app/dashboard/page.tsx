@@ -134,7 +134,7 @@ export default async function Dashboard() {
 
   return (
     <DashboardLayout>
-      <div className="lg:p-8 p-0">
+      <div className="lg:p-8 max-lg:pt-8">
         <h3 className="font-bold text-3xl mb-8">Dashboard</h3>
         <Suspense fallback={<Loading />}>
           <DashboardContent dataPromise={dataPromise} />

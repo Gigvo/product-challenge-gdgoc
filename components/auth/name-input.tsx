@@ -28,7 +28,7 @@ export default function NameInput({
   required = false,
 }: FormInputProps) {
   return (
-    <div>
+    <div className="space-y-2">
       <Label htmlFor={id}>
         {label}
         {required && "*"}

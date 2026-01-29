@@ -105,7 +105,7 @@ export default function CandidateDetails() {
   if (error || !candidate) {
     return (
       <DashboardLayout>
-        <div className="p-8">
+        <div className="lg:p-8 max-lg:pt-8">
           <Button variant="ghost" onClick={() => router.push("/candidates")}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Candidates
@@ -119,7 +119,7 @@ export default function CandidateDetails() {
   }
   return (
     <DashboardLayout>
-      <div className="p-8 text-muted-foreground">
+      <div className="lg:p-8 max-lg:pt-8 text-muted-foreground">
         <Button variant="default" onClick={() => router.push("/candidates")}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Candidates
@@ -153,8 +153,49 @@ export default function CandidateDetails() {
             {Job}
           </p>
         </div>
-        <div className="flex flex-row gap-8 mt-8">
+        <div className="flex lg:flex-row flex-col gap-8 mt-8">
           <div className="flex flex-col gap-4 ">
+            <div
+              className={`p-6 rounded-[8px] flex flex-col gap-2 lg:hidden items-center ${
+                candidate.matchScore >= 75
+                  ? "bg-accent/50"
+                  : candidate.matchScore >= 50
+                    ? "bg-yellow-500/50"
+                    : "bg-red-500/50"
+              }`}
+            >
+              <div className="flex flex-row gap-2 items-center">
+                <Sparkles className="text-card-foreground" />
+                <p className="text-card-foreground text-4xl font-bold">
+                  {candidate.matchScore}%
+                  <span className="text-sm text-muted-foreground ml-2">
+                    match
+                  </span>
+                </p>
+              </div>
+
+              {candidate.matchScore >= 90 && (
+                <span className="text-sm text-center text-foreground ml-2">
+                  Top-tier candidate
+                </span>
+              )}
+              {candidate.matchScore >= 80 && candidate.matchScore < 90 && (
+                <span className="text-sm text-foreground ml-2">
+                  Excellent candidate
+                </span>
+              )}
+              {candidate.matchScore >= 70 && candidate.matchScore < 80 && (
+                <span className="text-sm text-foreground ml-2">Good match</span>
+              )}
+              {candidate.matchScore >= 50 && candidate.matchScore < 70 && (
+                <span className="text-sm text-foreground ml-2">
+                  Moderate match
+                </span>
+              )}
+              {candidate.matchScore < 50 && (
+                <span className="text-sm text-foreground ml-2">Low match</span>
+              )}
+            </div>
             <div className="rounded-[10px] border-1 border-muted bg-card p-6">
               <p className="font-bold text-xl text-foreground mb-2">
                 Experience Summary
@@ -178,7 +219,7 @@ export default function CandidateDetails() {
           </div>
           <div className="flex flex-col gap-4">
             <div
-              className={`p-6 rounded-[8px] flex flex-col gap-2 ${
+              className={`p-6 rounded-[8px] flex flex-col gap-2 max-lg:hidden ${
                 candidate.matchScore >= 75
                   ? "bg-accent/50"
                   : candidate.matchScore >= 50

@@ -80,8 +80,12 @@ export default function AddUserForm() {
     }
   };
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      {message && <p className="text-sm">{message}</p>}
+    <form onSubmit={handleSubmit} className="space-y-8">
+      {message && (
+        <p className="text-sm font-bold border-muted border-1 p-2 rounded-md">
+          {message}
+        </p>
+      )}
       <InputForm
         id="email"
         name="email"

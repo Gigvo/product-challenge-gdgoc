@@ -89,7 +89,7 @@ export default function JobActions({
         </DropdownMenuContent>
       </DropdownMenu>
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
-        <DialogContent className="max-w-125">
+        <DialogContent className="max-w-125 max-md:max-w-80">
           <DialogHeader>
             <DialogTitle>Edit Job Vacancy</DialogTitle>
           </DialogHeader>

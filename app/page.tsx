@@ -10,7 +10,11 @@ export default function Home() {
         <section className="container lg:px-90 md:px-20 px-10 py-20 text-center mx-auto flex flex-col items-center">
           <Reveal>
             <h1 className="text-5xl lg:text-7xl font-extrabold leading-tight text-foreground">
-              Hire Smarter with AI-Driven Talent Matching
+              Hire Smarter with{" "}
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-green-900">
+                AI Driven
+              </span>{" "}
+              Talent Matching
             </h1>
           </Reveal>
 
