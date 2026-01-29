@@ -34,7 +34,7 @@ export default function AuthLayout({
           </div>
         </div>
       </div>
-      <div className="flex-1 flex flex-col gap-2 items-center justify-center bg-gradient-to-b from-background to-muted/20">
+      <div className="flex-1 flex flex-col gap-2 items-center justify-center bg-gradient-to-b from-background to-muted/20 max-lg:hidden">
         <h3 className="font-bold text-2xl">AI Powered Recruitment</h3>
         <div className="flex flex-row gap-2">
           <p>with</p>
