@@ -2,7 +2,6 @@
 
 import React from "react";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import { Trash2 } from "lucide-react";
 import {
@@ -27,7 +26,6 @@ export default function DeleteCandidate({
   candidateName,
   onDeleteSuccess,
 }: DeleteCandidateProps) {
-  const router = useRouter();
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 

@@ -14,6 +14,7 @@ import { Upload, FileText, X } from "lucide-react";
 
 interface CandidateFormProps {
   onSuccess: () => void;
+  onSubmitStart?: () => void;
 }
 
 interface Job {
@@ -22,7 +23,10 @@ interface Job {
   isActive: boolean;
 }
 
-export default function CandidateForm({ onSuccess }: CandidateFormProps) {
+export default function CandidateForm({
+  onSuccess,
+  onSubmitStart,
+}: CandidateFormProps) {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [selectedJob, setSelectedJob] = useState<string>("");
   const [pdfFile, setPdfFile] = useState<File | null>(null);
@@ -85,6 +89,8 @@ export default function CandidateForm({ onSuccess }: CandidateFormProps) {
       setError("Please upload a CV in PDF format.");
       return;
     }
+
+    onSubmitStart?.();
 
     setLoading(true);
     try {

@@ -102,7 +102,7 @@ export default function JobCard() {
           <div key={job.id} className="border p-4 rounded-xl shadow bg-card">
             <div className="flex flex-row justify-between gap-4">
               <div className="flex flex-row gap-4 items-center">
-                <h4 className="text-xl font-semibold">{job.title}</h4>
+                <h4 className="text-xl font-bold">{job.title}</h4>
                 <Badge className={job.isActive ? "bg-green-500" : "bg-red-500"}>
                   {job.isActive ? "Active" : "Inactive"}
                 </Badge>
@@ -113,17 +113,19 @@ export default function JobCard() {
                 onEditSuccess={handleRefresh}
               />
             </div>
-            <p className="text-gray-600">{job.description}</p>
-            <p className="text-gray-500 flex items-center gap-2">
+            <p className="text-muted-foreground">{job.description}</p>
+            <p className="text-se flex items-center gap-2 mt-2">
               <MapPin className="w-3 h-3" />
               {job.location}
             </p>
 
-            <p className="text-sm text-gray-700">Requirements:</p>
-            <ul className="list-disc list-inside">
+            <p className="text-sm text-muted-foreground mt-2 font-semibold">
+              Requirements:
+            </p>
+            <ul className="list-disc list-inside ">
               {job.required_skills && job.required_skills.length > 0 ? (
                 job.required_skills.map((req, reqIndex) => (
-                  <li key={reqIndex} className="text-sm text-gray-600">
+                  <li key={reqIndex} className="text-sm text-muted-foreground">
                     {req}
                   </li>
                 ))

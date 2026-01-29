@@ -1,9 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
-import { useRouter } from "next/navigation";
 import { Gemini } from "@lobehub/icons";
-import { Flexbox } from "@lobehub/ui";
 
 interface AuthLayoutProps {
   children: ReactNode;
@@ -16,7 +14,6 @@ export default function AuthLayout({
   title,
   description,
 }: AuthLayoutProps) {
-  const router = useRouter();
   return (
     <div className="flex flex-row">
       <div className="min-h-screen flex flex-col flex-1">
