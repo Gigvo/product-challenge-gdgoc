@@ -5,16 +5,23 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 
 export default function Navbar() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // null = unknown/loading, true = authenticated, false = not authenticated
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
   const checkSession = async () => {
     try {
-      const res = await fetch("/api/auth/me", { cache: "no-store" });
+      const res = await fetch("/api/auth/me", {
+        cache: "no-store",
+        credentials: "include",
+      });
       if (res.ok) return true;
 
       if (res.status === 401) {
         try {
-          await fetch("/api/auth/logout", { method: "POST" });
+          await fetch("/api/auth/logout", {
+            method: "POST",
+            credentials: "include",
+          });
         } catch {}
       }
 
@@ -44,7 +51,7 @@ export default function Navbar() {
   }, []);
 
   const handleLogout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
+    await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
     setIsLoggedIn(false);
     window.location.href = "/";
   };
@@ -59,7 +66,7 @@ export default function Navbar() {
         </Link>
 
         <div className="flex items-center gap-3">
-          {isLoggedIn ? (
+          {isLoggedIn === true ? (
             <>
               <Link
                 href="/dashboard"
